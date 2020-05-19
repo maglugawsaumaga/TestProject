@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Untitled</title>
+
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2016.1.412/styles/kendo.common.min.css">
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2016.1.412/styles/kendo.rtl.min.css">
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2016.1.412/styles/kendo.default.min.css">
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2016.1.412/styles/kendo.mobile.all.min.css">
+
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://kendo.cdn.telerik.com/2016.1.412/js/angular.min.js"></script>
+    <script src="http://kendo.cdn.telerik.com/2016.1.412/js/jszip.min.js"></script>
+    <script src="http://kendo.cdn.telerik.com/2016.1.412/js/kendo.all.min.js"></script>
+</head>
+<body>
+    <div id="example" ng-app="KendoDemos">
+        <div ng-controller="MyCtrl">
+            <kendo-grid options="mainGridOptions">
+                <div k-detail-template>
+                    <kendo-tabstrip>
+                        <ul>
+                            <li class="k-state-active">Customers information</li>
+
+                        </ul>
+                        <div>
+                            <div kendo-grid k-options="Options(dataItem)"></div>
+                        </div>
+
+                    </kendo-tabstrip>
+                </div>
+            </kendo-grid>
+
+
+        </div>
+    </div>
+
+    <script>
+    angular.module("KendoDemos", [ "kendo.directives" ])
+        .controller("MyCtrl", function($scope){
+            $scope.mainGridOptions = {
+                dataSource: {
+                    type: "json",
+                    transport: {
+                        read: "/api/Products/List"
+                    },
+                    pageSize: 5,
+                    serverPaging: true,
+                    serverSorting: true
+                },
+                sortable: true,
+                pageable: true,
+                dataBound: function() {
+                    this.expandRow(this.tbody.find("tr.k-master-row").first());
+                },
+                columns: [{
+                    field: "Id",
+                    title: "Id",
+                    width: "120px"
+                    },{
+                    field: "Name",
+                    title: "Product Name",
+                    width: "120px"
+                    }]
+            };
+
+            $scope.Options = function(dataItem) {
+                return {
+                    dataSource: {
+                        type: "json",
+                        dataType:"GET",
+                        transport: {
+                            read: "/api/Product/Details/"+ dataItem.Id
+                        },
+                        serverPaging: true,
+                        serverSorting: true,
+                        serverFiltering: true,
+                        pageSize: 5,
+                    },
+                    scrollable: false,
+                    sortable: true,
+                    pageable: true,
+                    columns: [
+                        { field: "Id", title:"ID", width: "56px" },
+                        { field: "Name", title:"Product Name", width: "110px" },
+                        { field: "ManufactureDate", title: "Manufacture Date" },
+                        { field: "Location", title: "Location" },
+                        { field: "IsAvailable", title: "Available" },
+
+                    ]
+                };
+            };
+        })
+    </script>
+</body>
+</html>

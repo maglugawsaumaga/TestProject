@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Untitled</title>
+
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2016.1.412/styles/kendo.common.min.css">
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2016.1.412/styles/kendo.rtl.min.css">
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2016.1.412/styles/kendo.default.min.css">
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2016.1.412/styles/kendo.mobile.all.min.css">
+
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://kendo.cdn.telerik.com/2016.1.412/js/angular.min.js"></script>
+    <script src="http://kendo.cdn.telerik.com/2016.1.412/js/jszip.min.js"></script>
+    <script src="http://kendo.cdn.telerik.com/2016.1.412/js/kendo.all.min.js"></script>
+</head>
+<body>
+    <div id="example" ng-app="KendoDemos">
+        <h3 style="font-style:italic;color:#F35800">CRUD in Kendo Gird using AngularJS and ASP.NET WEB API </h3>
+        <br />
+
+        <div ng-controller="MyCtrl">
+            <kendo-grid k-options="mainGridOptions">
+
+            </kendo-grid>
+
+
+        </div>
+    </div>
+
+    <script>
+    angular.module("KendoDemos", [ "kendo.directives" ])
+        .controller("MyCtrl", function ($scope) {
+
+            $scope.mainGridOptions = {
+
+                    dataSource: {
+                        type: "json",
+                        transport: {
+                            read:
+             {
+                 url: "api/Products",
+                 dataType: "json",
+             },
+                            destroy:
+             {
+                 url: "api/Products",
+                 type: "DELETE"
+             },
+                            create:
+                            {
+                                url: "api/Products",
+                                type: "POST"
+                            },
+                            update:
+                            {
+                                url: "api/Products" ,
+                                type: "PUT",
+
+                            parameterMap: function (options, operation) {
+                                if (operation !== "read" && options.models) {
+                                    return {
+                                        models: kendo.stringify(options.models)
+                                    };
+                                }
+                            }
+                            },
+
+
+                        },
+                        schema:
+         {
+             model:
+             {
+                 id: "Id",
+                 fields: {
+                     Id: { editable: false, nullable: true, type: "number" },
+                     Name: { editable: true, nullable: true, type: "string" },
+                 }
+             }
+         },
+                        pageSize: 5,
+                        serverPaging: true,
+                        serverSorting: true
+                    },
+
+                    editable: "inline",
+                    toolbar: ["create"],
+                    sortable: true,
+                    pageable: true,
+                    resizeable: true,
+                    columns: [{
+                        field: "Id",
+                        title: "Id",
+                        width: "180px"
+                    }, {
+                        field: "Name",
+                        title: "Name Name",
+                        width: "180px"
+                    },
+                        {
+                            command: ["edit",
+                            {
+                                name: "destroy",
+                                text: "remove",
+                                width: "120px"
+                            }
+                            ],
+                        }
+                    ]
+                };
+
+
+
+        })
+    </script>
+</body>
+</html>
